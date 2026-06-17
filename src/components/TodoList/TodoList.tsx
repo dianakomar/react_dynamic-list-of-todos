@@ -1,9 +1,10 @@
 import React from 'react';
 import { Todo } from '../../types/Todo';
+import classNames from 'classnames';
 
 type Props = {
   todos: Todo[];
-  onSelectedTodo: (todo: Todo) => void;
+  onSelectedTodo: (todo: Todo | null) => void;
   selectedTodo: Todo | null;
 };
 
@@ -39,16 +40,23 @@ export const TodoList: React.FC<Props> = ({
           </td>
           <td className="is-vcentered is-expanded">
             <p
-              className={
-                todo.completed ? 'has-text-success' : 'has-text-danger'
-              }
+              className={classNames({
+                'has-text-success': todo.completed,
+                'has-text-danger': !todo.completed,
+              })}
             >
               {todo.title}
             </p>
           </td>
           <td className="has-text-right is-vcentered">
             <button
-              onClick={() => onSelectedTodo(todo)}
+              onClick={() => {
+                if (selectedTodo?.id === todo.id) {
+                  onSelectedTodo(null);
+                } else {
+                  onSelectedTodo(todo);
+                }
+              }}
               data-cy="selectButton"
               className="button"
               type="button"
